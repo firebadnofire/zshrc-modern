@@ -36,7 +36,6 @@ install_packages() {
             sudo pkg install -y ${PKGS[$os_type]}
             ;;
         gentoo)
-            sudo emerge --sync
             sudo emerge -av ${PKGS[$os_type]}
             ;;
         *)
