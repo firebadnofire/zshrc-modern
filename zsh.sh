@@ -106,7 +106,7 @@ show_menu() {
         echo "9. Install Fastfetch"
         echo "10. Install Mullvad aliases"
         echo "11. Install Docker warn for SELinux"
-        echo "12. Install GoLang (/tmp/golang.sh)"
+        echo "12. Install GoLang"
         echo "0. Generate SSH Key (ed25519)"
         echo "e. Exit"
 
