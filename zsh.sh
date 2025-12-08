@@ -54,7 +54,7 @@ install_zshrc() {
     curl -Lo ~/.zshrc_bpk https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/zshrc_bpk
     curl -Lo ~/.cow https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/cow
     curl -Lo ~/.oh-my-zsh/themes/firebadnofire.zsh-theme \
-        https://pubcode.archuser.org/firebadnofire/zsh-theme/raw/branch/main/firebadnofire.zsh-theme
+        https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/firebadnofire.zsh-theme
 
     git clone https://github.com/tom-auger/cmdtime ~/.oh-my-zsh/plugins/cmdtime
 }
@@ -106,6 +106,7 @@ show_menu() {
         echo "9. Install Fastfetch"
         echo "10. Install Mullvad aliases"
         echo "11. Install Docker warn for SELinux"
+        echo "12. Install GoLang (/tmp/golang.sh)"
         echo "0. Generate SSH Key (ed25519)"
         echo "e. Exit"
 
@@ -123,6 +124,7 @@ show_menu() {
             9) install_fastfetch ;;
             10) curl -Lo ~/.zshrc.d/06-mullvad.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc ;;
             11) curl -Lo ~/.zshrc.d/07-warn-docker.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc ;;
+            12) if [[ -x /tmp/golang.sh ]]; then /tmp/golang.sh; else echo "golang.sh not found at /tmp/golang.sh"; fi ;;
             0) install_local_ssh_key ;;
             e|E) break ;;
             *) echo "Invalid selection." ;;
