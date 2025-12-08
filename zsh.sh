@@ -66,11 +66,11 @@ install_zshrc() {
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
     echo "Deploying Zsh config files..."
-    curl -Lo ~/.zshrc https://archuser.org/zshrc_remote
-    curl -Lo ~/.zshrc_bpk https://live.archuser.org/zshrc
-    curl -Lo ~/.cow https://archuser.org/cow
+    curl -Lo ~/.zshrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/zshrc
+    curl -Lo ~/.zshrc_bpk https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/zshrc_bpk
+    curl -Lo ~/.cow https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/cow
     curl -Lo ~/.oh-my-zsh/themes/firebadnofire.zsh-theme \
-        https://codeberg.org/firebadnofire/zsh-theme/raw/branch/main/firebadnofire.zsh-theme
+        https://pubcode.archuser.org/firebadnofire/zsh-theme/raw/branch/main/firebadnofire.zsh-theme
 
     git clone https://github.com/tom-auger/cmdtime ~/.oh-my-zsh/plugins/cmdtime
 }
