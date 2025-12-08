@@ -17,11 +17,15 @@ install_packages() {
 
     case "$os_type" in
         debian)
-            sudo apt update &&
+            sudo apt update
             sudo apt install -y ${PKGS[$os_type]}
-            curl -Lo ~/.zshrc.d/04-pkg-debian.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-debian.zrc
-            curl -Lo ~/.zshrc.d/06-mullvad.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc
-            curl -Lo ~/.zshrc.d/07-warn-docker.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc
+            curl -Lo ~/.zshrc.d/04-pkg-debian.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-debian.zrc
+            curl -Lo ~/.zshrc.d/06-mullvad.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc
+            curl -Lo ~/.zshrc.d/07-warn-docker.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc
+
             echo "Installing apt-fast..."
             curl -sLo apt-fast-installer.sh https://git.io/vokNn
             bash apt-fast-installer.sh
@@ -31,10 +35,13 @@ install_packages() {
 
         arch)
             sudo pacman --noconfirm -S ${PKGS[$os_type]}
-            curl -Lo ~/.zshrc.d/04-pkg-arch.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-arch.zrc
-            curl -Lo ~/.zshrc.d/06-mullvad.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc
-            curl -Lo ~/.zshrc.d/07-warn-docker.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc
-            echo "Installing yay and pamac..."
+            curl -Lo ~/.zshrc.d/04-pkg-arch.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-arch.zrc
+            curl -Lo ~/.zshrc.d/06-mullvad.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc
+            curl -Lo ~/.zshrc.d/07-warn-docker.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc
+
             cd /opt
             sudo git clone https://aur.archlinux.org/yay-git.git
             sudo chown -R $USER:$USER yay-git
@@ -45,26 +52,37 @@ install_packages() {
 
         rhel)
             sudo dnf install -y ${PKGS[$os_type]} epel-release
-            curl -Lo ~/.zshrc.d/04-pkg-rhel.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-rhel.zrc
-            curl -Lo ~/.zshrc.d/06-mullvad.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc
-            curl -Lo ~/.zshrc.d/07-warn-docker.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc
-            sudo dnf install -y https://ftp.lysator.liu.se/pub/opensuse/distribution/leap/15.5/repo/oss/x86_64/fzy-0.9-bp155.2.10.x86_64.rpm
+            curl -Lo ~/.zshrc.d/04-pkg-rhel.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-rhel.zrc
+            curl -Lo ~/.zshrc.d/06-mullvad.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc
+            curl -Lo ~/.zshrc.d/07-warn-docker.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc
+
+            sudo dnf install -y \
+                https://ftp.lysator.liu.se/pub/opensuse/distribution/leap/15.5/repo/oss/x86_64/fzy-0.9-bp155.2.10.x86_64.rpm
             ;;
 
         opensuse)
             sudo zypper refresh
             sudo zypper --non-interactive install ${PKGS[$os_type]}
-            curl -Lo ~/.zshrc.d/04-pkg-opensuse-tumble.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-opensuse-tumble.zrc
-            curl -Lo ~/.zshrc.d/06-mullvad.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc
-            curl -Lo ~/.zshrc.d/07-warn-docker.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc
+            curl -Lo ~/.zshrc.d/04-pkg-opensuse-tumble.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-opensuse-tumble.zrc
+            curl -Lo ~/.zshrc.d/06-mullvad.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc
+            curl -Lo ~/.zshrc.d/07-warn-docker.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc
             ;;
 
         freebsd)
             sudo pkg update
             sudo pkg install -y ${PKGS[$os_type]}
-            curl -Lo ~/.zshrc.d/04-pkg-freebsd.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-freebsd.zrc
-            curl -Lo ~/.zshrc.d/06-mullvad.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc
-            curl -Lo ~/.zshrc.d/07-warn-docker.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc
+            curl -Lo ~/.zshrc.d/04-pkg-freebsd.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-freebsd.zrc
+            curl -Lo ~/.zshrc.d/06-mullvad.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc
+            curl -Lo ~/.zshrc.d/07-warn-docker.zrc \
+                https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc
             ;;
 
         *)
