@@ -10,6 +10,7 @@ main() {
     clear
     chmod +x /tmp/zsh.sh
     chmod +x /tmp/fastfetch.sh
+    chmod +x /tmp/golang.sh
     echo "run /tmp/zsh.sh"
 }
 
