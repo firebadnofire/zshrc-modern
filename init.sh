@@ -6,6 +6,7 @@
 main() {
     wget -O /tmp/zsh.sh https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/zsh.sh
     wget -O /tmp/fastfetch.sh https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/fastfetch.sh
+    wget -O /tmp/golang.sh https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/golang.sh
     clear
     chmod +x /tmp/zsh.sh
     chmod +x /tmp/fastfetch.sh
