@@ -7,6 +7,7 @@ declare -A PKGS=(
     [rhel]="aria2 zip make gnupg gnupg2 curl zsh git unzip sudo lsb_release"
     [opensuse]="aria2 zip make gpg2 curl zsh git unzip sudo lsb-release fzy"
     [freebsd]="aria2 zip gmake gnupg curl zsh git unzip sudo fzy"
+    [gentoo]="app-arch/zip app-arch/p7zip net-misc/curl app-shells/zsh dev-vcs/git app-arch/unzip app-arch/aria2 app-admin/sudo sys-apps/lsb-release app-misc/fzy"
 )
 
 install_packages() {
@@ -33,6 +34,10 @@ install_packages() {
         freebsd)
             sudo pkg update
             sudo pkg install -y ${PKGS[$os_type]}
+            ;;
+        gentoo)
+            sudo emerge --sync
+            sudo emerge -av ${PKGS[$os_type]}
             ;;
         *)
             echo "Unsupported OS selection."
@@ -100,13 +105,14 @@ show_menu() {
         echo "3. Install for RHEL"
         echo "4. Install for OpenSUSE"
         echo "5. Install for FreeBSD"
-        echo "6. Raspberry Pi Extras"
-        echo "7. Install Rust"
-        echo "8. Install Zshrc"
-        echo "9. Install Fastfetch"
-        echo "10. Install Mullvad aliases"
-        echo "11. Install Docker warn for SELinux"
-        echo "12. Install GoLang"
+        echo "6. Install for Gentoo"
+        echo "7. Raspberry Pi Extras"
+        echo "8. Install Rust"
+        echo "9. Install Zshrc"
+        echo "10. Install Fastfetch"
+        echo "11. Install Mullvad aliases"
+        echo "12. Install Docker warn for SELinux"
+        echo "13. Install GoLang"
         echo "0. Generate SSH Key (ed25519)"
         echo "e. Exit"
 
@@ -118,13 +124,14 @@ show_menu() {
             3) install_packages "rhel"; curl -Lo ~/.zshrc.d/04-pkg-rhel.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-rhel.zrc ;;
             4) install_packages "opensuse"; curl -Lo ~/.zshrc.d/04-pkg-opensuse-tumble.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-opensuse-tumble.zrc ;;
             5) install_packages "freebsd"; curl -Lo ~/.zshrc.d/04-pkg-freebsd.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-freebsd.zrc ;;
-            6) install_rpi_extras ;;
-            7) install_rust ;;
-            8) install_zshrc ;;
-            9) install_fastfetch ;;
-            10) curl -Lo ~/.zshrc.d/06-mullvad.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc ;;
-            11) curl -Lo ~/.zshrc.d/07-warn-docker.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc ;;
-            12) if [[ -x /tmp/golang.sh ]]; then /tmp/golang.sh; else echo "golang.sh not found at /tmp/golang.sh"; fi ;;
+            6) install_packages "gentoo"; curl -Lo ~/.zshrc.d/04-pkg-gentoo.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-gentoo.zrc ;;
+            7) install_rpi_extras ;;
+            8) install_rust ;;
+            9) install_zshrc ;;
+            10) install_fastfetch ;;
+            11) curl -Lo ~/.zshrc.d/06-mullvad.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc ;;
+            12) curl -Lo ~/.zshrc.d/07-warn-docker.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc ;;
+            13) if [[ -x /tmp/golang.sh ]]; then /tmp/golang.sh; else echo "golang.sh not found at /tmp/golang.sh"; fi ;;
             0) install_local_ssh_key ;;
             e|E) break ;;
             *) echo "Invalid selection." ;;
