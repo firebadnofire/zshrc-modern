@@ -1,0 +1,10 @@
+echo "Packages to upgrade:"
+apt list --upgradable 2>/dev/null | grep -v "Listing" | wc -l
+
+alias ins='sudo apt install'
+alias update='sudo apt update'
+alias upgrade='sudo apt upgrade'
+alias search='apt search'
+alias rem='sudo apt remove'
+
+PKGMGR='apt, Debian'

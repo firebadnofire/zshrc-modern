@@ -1,0 +1,10 @@
+echo "Packages to upgrade:"
+pacman -Qu 2>/dev/null | wc -l
+
+alias ins='sudo pacman -S'
+alias update='sudo pacman -Sy'
+alias upgrade='sudo pacman -Syu'
+alias search='pacman -Ss'
+alias rem='sudo pacman -Rsn'
+
+PKGMGR='pacman, Arch Linux'
