@@ -1,0 +1,22 @@
+# Warn about missing :Z flags when bringing up containers
+
+autoload -Uz add-zsh-hook
+
+docker_warn() {
+    case "$1" in
+        docker|docker-compose)
+            case "$2" in
+                up|start|run|compose)
+                    echo "Remember your ':Z' flags"
+                ;;
+            esac
+        ;;
+    esac
+}
+
+docker_preexec() {
+    local cmd=(${(z)1})
+    docker_warn $cmd
+}
+
+add-zsh-hook preexec docker_preexec

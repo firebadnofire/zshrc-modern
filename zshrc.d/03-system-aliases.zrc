@@ -1,0 +1,23 @@
+alias f="find . -type f | fzy"
+alias tp='ping -c 4 google.com'
+alias tlp='ping -c 4 192.168.86.1'
+alias trp='ping -c 4 8.8.8.8'
+alias copy='rsync -ah --progress'
+alias ports='sudo lsof -i -P -n | grep'
+
+alias starts="sudo systemctl start"
+alias stops="sudo systemctl stop"
+alias reloads="sudo systemctl reload"
+alias stats="sudo systemctl status"
+alias restarts="sudo systemctl restart"
+alias kills="sudo systemctl kill"
+
+alias rport='echo $((49152 + RANDOM % (65535 - 49152 + 1)))'
+alias rsport='echo $((RANDOM % (49152 - 1024) + 1024))'
+
+alias kl='gpg --auto-key-locate keyserver --locate-keys'
+alias sudow='sudo -u www-data'
+
+alias lookup="q --server $doq"
+
+alias sssh='ssh -o ProxyCommand="nc -x 127.0.0.1:1080 %h %p"'

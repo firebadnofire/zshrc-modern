@@ -1,0 +1,10 @@
+echo "Packages to upgrade:"
+zypper list-updates | grep -v "^Loading" | grep -v "^$" | wc -l
+
+alias ins='sudo zypper install'
+alias update='sudo zypper refresh'
+alias upgrade='sudo zypper dup'   # use 'dup' if you run Tumbleweed
+alias search='zypper search'
+alias rem='sudo zypper remove'
+
+PKGMGR='zypper, OpenSUSE'

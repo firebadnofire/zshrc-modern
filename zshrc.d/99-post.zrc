@@ -1,0 +1,5 @@
+who
+TZ="America/New_York" date
+stty sane
+echo "Package manager: $PKGMGR"
+echo "Git commit signer: $gitsign"
