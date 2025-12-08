@@ -56,9 +56,13 @@ install_zshrc() {
     echo "Deploying Zsh config files..."
     curl -Lo ~/.zshrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/zshrc
     curl -Lo ~/.zshrc_bpk https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/zshrc_bpk
-    curl -Lo ~/.cow https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/cow
     curl -Lo ~/.oh-my-zsh/themes/firebadnofire.zsh-theme \
         https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/firebadnofire.zsh-theme
+
+    for f in 00-paths.zrc 02-git-signing.zrc 03-system-aliases.zrc 05-tools.zrc 99-post.zrc suppress-warning.zrc; do
+        curl -Lo ~/.zshrc.d/$f https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/zshrc.d/$f
+    done
+
 
     git clone https://github.com/tom-auger/cmdtime ~/.oh-my-zsh/plugins/cmdtime
 }
