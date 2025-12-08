@@ -104,21 +104,25 @@ show_menu() {
         echo "7. Install Rust"
         echo "8. Install Zshrc"
         echo "9. Install Fastfetch"
+        echo "10. Install Mullvad aliases"
+        echo "11. Install Docker warn for SELinux"
         echo "0. Generate SSH Key (ed25519)"
         echo "e. Exit"
 
         read -p "Select an option: " choice
 
         case "$choice" in
-            1) install_packages "debian" ;;
-            2) install_packages "arch" ;;
-            3) install_packages "rhel" ;;
-            4) install_packages "opensuse" ;;
-            5) install_packages "freebsd" ;;
+            1) install_packages "debian"; curl -Lo ~/.zshrc.d/04-pkg-debian.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-debian.zrc ;;
+            2) install_packages "arch"; curl -Lo ~/.zshrc.d/04-pkg-arch.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-arch.zrc ;;
+            3) install_packages "rhel"; curl -Lo ~/.zshrc.d/04-pkg-rhel.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-rhel.zrc ;;
+            4) install_packages "opensuse"; curl -Lo ~/.zshrc.d/04-pkg-opensuse-tumble.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-opensuse-tumble.zrc ;;
+            5) install_packages "freebsd"; curl -Lo ~/.zshrc.d/04-pkg-freebsd.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/04-pkg-freebsd.zrc ;;
             6) install_rpi_extras ;;
             7) install_rust ;;
             8) install_zshrc ;;
             9) install_fastfetch ;;
+            10) curl -Lo ~/.zshrc.d/06-mullvad.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/06-mullvad.zrc ;;
+            11) curl -Lo ~/.zshrc.d/07-warn-docker.zrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/user-selection/07-warn-docker.zrc ;;
             0) install_local_ssh_key ;;
             e|E) break ;;
             *) echo "Invalid selection." ;;
