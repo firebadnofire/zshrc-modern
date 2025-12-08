@@ -7,7 +7,7 @@ declare -A PKGS=(
     [rhel]="aria2 zip make gnupg gnupg2 curl zsh git unzip sudo lsb_release"
     [opensuse]="aria2 zip make gpg2 curl zsh git unzip sudo lsb-release fzy"
     [freebsd]="aria2 zip gmake gnupg curl zsh git unzip sudo fzy"
-    [gentoo]="app-arch/zip app-arch/p7zip net-misc/curl app-shells/zsh dev-vcs/git app-arch/unzip app-arch/aria2 app-admin/sudo sys-apps/lsb-release app-misc/fzy"
+    [gentoo]="app-arch/zip app-arch/p7zip net-misc/curl app-shells/zsh dev-vcs/git app-arch/unzip app-admin/sudo app-misc/fzy"
 )
 
 install_packages() {
