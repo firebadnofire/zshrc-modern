@@ -23,7 +23,7 @@ export ZSH="$HOME/.oh-my-zsh"
 DISABLE_UPDATE_PROMPT=true
 
 THEME_FILE="$HOME/.oh-my-zsh/themes/firebadnofire.zsh-theme"
-THEME_URL="https://live.archuser.org/firebadnofire.zsh-theme"
+THEME_URL="https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/firebadnofire.zsh-theme"
 
 if [[ ! -f "$THEME_FILE" ]]; then
     curl -fLo "$THEME_FILE" "$THEME_URL"
