@@ -55,7 +55,6 @@ install_zshrc() {
 
     echo "Deploying Zsh config files..."
     curl -Lo ~/.zshrc https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/zshrc
-    curl -Lo ~/.zshrc_bpk https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/zshrc_bpk
     curl -Lo ~/.oh-my-zsh/themes/firebadnofire.zsh-theme \
         https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/firebadnofire.zsh-theme
 
