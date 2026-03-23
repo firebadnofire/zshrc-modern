@@ -7,12 +7,14 @@ alias ports='sudo lsof -i -P -n 2>/dev/null | grep'
 alias nf='fastfetch'
 alias nfn='fastfetch --logo none --structure Title:Separator:OS:Host:Kernel:Uptime:Packages:Shell:Display:DE:WM:WMTheme:Theme:Icons:Font:Cursor:Terminal:TerminalFont:CPU:GPU:Memory:Swap:Disk:Battery:PowerAdapter:Locale'
 
-alias starts="sudo systemctl start"
-alias stops="sudo systemctl stop"
-alias reloads="sudo systemctl reload"
-alias stats="sudo systemctl status"
-alias restarts="sudo systemctl restart"
-alias kills="sudo systemctl kill"
+if command -v systemctl >/dev/null 2>&1; then
+    alias starts="sudo systemctl start"
+    alias stops="sudo systemctl stop"
+    alias reloads="sudo systemctl reload"
+    alias stats="sudo systemctl status"
+    alias restarts="sudo systemctl restart"
+    alias kills="sudo systemctl kill"
+fi
 
 alias rport='echo $((49152 + RANDOM % (65535 - 49152 + 1)))'
 alias rsport='echo $((RANDOM % (49152 - 1024) + 1024))'

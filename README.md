@@ -14,6 +14,11 @@ This repository is organized around a simple deployment pipeline:
 
 The installer deploys a common Zsh base, then adds overlays for the selected package manager and optional features.
 
+The repository can now be used in two ways:
+
+- remote-first through the published bootstrap URL
+- locally from a checked-out clone, where `zsh.sh` copies assets from the repository instead of re-downloading them
+
 ## Bootstrap
 
 To start from the published remote bootstrap script:
@@ -31,6 +36,14 @@ curl -fSsL archuser.org/zshrc | bash
 The shorter `archuser.org/zshrc` form relies on HTTP redirection, so `curl -L` is required.
 
 `init.sh` downloads the current installer payloads into `/tmp` and prompts you to run `/tmp/zsh.sh`.
+
+You can also run the installer directly from a local checkout:
+
+```bash
+bash ./zsh.sh
+```
+
+When run locally, `zsh.sh` prefers repository files over remote downloads.
 
 ## Repository Layout
 
@@ -84,7 +97,12 @@ Main deployment script. It provides an interactive menu for:
 - enabling Docker SELinux reminders
 - generating a local SSH key
 
-This script is the main place where distro package installation is defined.
+This script is the main place where distro package installation is defined. It now centralizes:
+
+- shared remote asset path handling
+- local-versus-remote asset deployment
+- distro overlay selection
+- backup of an existing `~/.zshrc` before replacement
 
 ### `zshrc`
 
@@ -95,6 +113,8 @@ Runtime shell entry point. It:
 - bootstraps Oh My Zsh
 - ensures the custom theme is present
 - loads all `~/.zshrc.d/*.zrc` modules
+
+If Oh My Zsh is missing, it exits cleanly instead of partially bootstrapping a broken shell.
 
 ### `zshrc.d/`
 
@@ -148,6 +168,8 @@ Current base package installation support in `zsh.sh`:
 
 Additional distro-aware support exists in `fastfetch.sh`, which includes several extra platforms for Fastfetch installation.
 
+`golang.sh` is intentionally Linux-only and now exits clearly on unsupported operating systems.
+
 ## Deployment Model
 
 The project separates installation from runtime behavior:
@@ -169,10 +191,11 @@ This means the runtime shell config stays mostly uniform while package-manager c
 
 ## Notes and Caveats
 
-- The installer currently fetches deployed files from remote endpoints instead of copying directly from a local checkout.
-- Some startup behavior is intentionally verbose. For example, `99-post.zrc` prints status information on shell startup.
+- `init.sh` is still a remote bootstrap script, but `zsh.sh` can now deploy directly from a local checkout.
+- Startup diagnostics remain enabled by default, but they can now be disabled by setting `ZSHRC_SHOW_STARTUP_INFO=0`.
 - Some shared aliases assume Linux tooling such as `systemctl`, so not every shared module is fully portable across every supported platform.
-- A few deployed artifacts are install-time generated or externally hosted, so the checked-out repository is not the entire deployed state by itself.
+- The theme fetch path is now aligned with the repository's raw asset path through `ZSHRC_REMOTE_BASE`.
+- Install-time generated files still exist, such as `~/.zshrc.d/08-golang.zrc`.
 
 ## Development
 

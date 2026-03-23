@@ -5,11 +5,10 @@ if [ -f "$ssh_key" ]; then
     git config --global gpg.format ssh
     git config --global user.signingkey "$ssh_key"
     export gitsign=ssh
-elif gpg --list-keys | grep -q "$gpg_key_id"; then
+elif command -v gpg >/dev/null 2>&1 && gpg --list-keys 2>/dev/null | grep -q "$gpg_key_id"; then
     git config --global --unset gpg.format
     git config --global user.signingkey "$gpg_key_id"
     export gitsign=gpg
 else
-    echo "No valid SSH or GPG keys found."
     export gitsign=none
 fi

@@ -1,30 +1,27 @@
-#!/bin/bash
-
-# This script is to install fastfetch since it isn't in many repos by default
-
-# In the rare case someone decides to curl this and pipe it to bash, this script has been wrapped in a main function and executes it at the bottom
-# This is done to prevent code running before it is meant to or in an incomplete manner
-# It doesn't even work right when curled to bash anyway
+#!/usr/bin/env bash
+set -euo pipefail
 
 main() {
-    # Detecting the distribution
-    if [ -f /etc/os-release ]; then
+    local choice=
+
+    if [[ "$(uname -s)" == "FreeBSD" ]]; then
+        choice=11
+    elif [[ -f /etc/os-release ]]; then
+        # shellcheck disable=SC1091
         source /etc/os-release
-        case $ID in
+
+        case "${ID}" in
             pop|ubuntu)
                 choice=1
                 ;;
             debian)
-                if [ "$(uname -m)" == "aarch64" ]; then
+                if [[ "$(uname -m)" == "aarch64" ]]; then
                     choice=3
                 else
                     choice=2
                 fi
                 ;;
-            archarm)
-                choice=4
-                ;;
-            arch)
+            archarm|arch)
                 choice=4
                 ;;
             fedora|rhel|almalinux|fedora-asahi-remix)
@@ -45,9 +42,6 @@ main() {
             alt)
                 choice=10
                 ;;
-	    freebsd)
-		choice=11
-	    	;;
             *)
                 echo "Unsupported distribution. Exiting..."
                 exit 1
@@ -58,9 +52,7 @@ main() {
         exit 1
     fi
 
-    
-    # Use a case statement to handle the results
-    case $choice in
+    case "${choice}" in
         1)
             echo "Installing for Ubuntu"
             sudo add-apt-repository ppa:zhangsongcui3371/fastfetch
@@ -69,15 +61,15 @@ main() {
             ;;
         2)
             echo "Installing for Debian x86-64"
-            curl -sLo ~/fastfetch.deb https://github.com/fastfetch-cli/fastfetch/releases/latest/download/fastfetch-linux-amd64.deb
-            sudo dpkg -i ~/fastfetch.deb
-            rm ~/fastfetch.deb
+            curl -fsSL https://github.com/fastfetch-cli/fastfetch/releases/latest/download/fastfetch-linux-amd64.deb -o "${HOME}/fastfetch.deb"
+            sudo dpkg -i "${HOME}/fastfetch.deb"
+            rm -f "${HOME}/fastfetch.deb"
             ;;
         3)
             echo "Installing for Debian ARM64"
-            curl -sLo ~/fastfetch.deb https://github.com/fastfetch-cli/fastfetch/releases/latest/download/fastfetch-linux-aarch64.deb 
-            sudo dpkg -i ~/fastfetch.deb
-            rm ~/fastfetch.deb
+            curl -fsSL https://github.com/fastfetch-cli/fastfetch/releases/latest/download/fastfetch-linux-aarch64.deb -o "${HOME}/fastfetch.deb"
+            sudo dpkg -i "${HOME}/fastfetch.deb"
+            rm -f "${HOME}/fastfetch.deb"
             ;;
         4)
             echo "Installing for Arch"
@@ -99,7 +91,7 @@ main() {
             echo "Installing for NixOS"
             nix-shell -p fastfetch
             ;;
-         9)
+        9)
             echo "Installing for OpenSUSE"
             sudo zypper install fastfetch
             ;;
@@ -107,20 +99,15 @@ main() {
             echo "Installing for ALT Linux"
             sudo apt-get install fastfetch
             ;;
-	11)
-            pkg install fastfetch
-	    ;;
-        e|E)
-            echo "Exiting..."
-            cd ~
-            break
+        11)
+            echo "Installing for FreeBSD"
+            sudo pkg install -y fastfetch
             ;;
         *)
-            echo "Invalid selection. Please choose a number from 1 to 10, or 'e' to exit."
+            echo "Invalid platform selection."
+            exit 1
             ;;
-        esac
-
+    esac
 }
 
-# Execute the main function
-main
+main "$@"
