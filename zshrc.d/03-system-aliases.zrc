@@ -33,3 +33,25 @@ if [[ -f /etc/default/grub ]] && ! command -v update-grub >/dev/null 2>&1; then
         alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
     fi
 fi
+
+release() {
+  setopt localoptions err_return pipefail
+
+  local ver="$1"
+
+  if [[ -z "$ver" ]]; then
+    print "Usage: git_release <version>"
+    return 1
+  fi
+
+  if git rev-parse "$ver" >/dev/null 2>&1; then
+    print "Tag $ver already exists"
+    return 1
+  fi
+
+  git tag -a "$ver" -m "$ver"
+  git push origin "$ver"
+  git push
+
+  print "Released $ver"
+}
