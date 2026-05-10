@@ -24,17 +24,8 @@ The repository can now be used in two ways:
 To start from the published remote bootstrap script:
 
 ```bash
-curl -fSsL https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main/init.sh | bash
+curl -fSsL https://raw.githubusercontent.com/firebadnofire/zshrc-modern/refs/heads/main/init.sh | bash
 ```
-
-Short redirect form:
-
-```bash
-curl -fSsL archuser.org/zshrc | bash
-```
-
-The shorter `archuser.org/zshrc` form relies on HTTP redirection, so `curl -L` is required.
-
 `init.sh` downloads the current installer payloads into `/tmp` and prompts you to run `/tmp/zsh.sh`.
 
 You can also run the installer directly from a local checkout:
