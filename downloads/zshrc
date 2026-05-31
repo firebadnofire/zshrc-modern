@@ -80,8 +80,7 @@ __zshrc_refresh_local_sha256sum() {
     mv "$tmp_manifest" "$manifest_path"
 }
 
-update() {
-    local mode="${1:-repo}"
+zupdate() {
     local remote_manifest_url="${ZSHRC_REMOTE_BASE}/downloads.sha256sum"
     local remote_manifest_tmp
     local file
@@ -92,21 +91,10 @@ update() {
     local updated=0
     local checked=0
 
-    if [[ "$mode" == "system" ]]; then
-        if whence -w package_update >/dev/null 2>&1; then
-            package_update
-            return $?
-        fi
-
-        echo "No package update command is configured for this shell." >&2
+    if (( $# > 0 )); then
+        echo "Usage: zupdate" >&2
         return 1
     fi
-
-    if [[ "$mode" != "repo" ]]; then
-        echo "Usage: update [repo|system]" >&2
-        return 1
-    fi
-
     mkdir -p "$(dirname "$ZSHRC_REPO_SHA256SUM_CACHE")" "$(dirname "$ZSHRC_LOCAL_SHA256SUM")" "${ZSHRC_LOCAL_CACHE_DIR}/downloads"
     remote_manifest_tmp="$(mktemp)"
 

@@ -4,8 +4,7 @@ echo "Packages to upgrade:"
 dnf check-update --refresh 2>/dev/null | grep -v "^Last metadata" | wc -l
 
 alias ins='sudo dnf install'
-package_update() { sudo dnf check-update; }
-alias pkgupdate='package_update'
+alias update='sudo dnf check-update'
 alias upgrade='sudo dnf upgrade'
 alias search='dnf search'
 alias rem='sudo dnf remove'

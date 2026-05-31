@@ -4,8 +4,7 @@ echo "Packages to upgrade:"
 emerge -uDNpv @world | grep "^\[ebuild" | wc -l
 
 alias ins='sudo emerge -av'
-package_update() { sudo emaint sync -a; }
-alias pkgupdate='package_update'
+alias update='sudo emaint sync -a'
 alias upgrade='sudo emerge -uDN @world'
 alias search='emerge -s'
 alias rem='sudo emerge -C'

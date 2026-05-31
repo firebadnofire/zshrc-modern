@@ -4,8 +4,7 @@ echo "Packages to upgrade:"
 zypper list-updates | grep -v "^Loading" | grep -v "^$" | wc -l
 
 alias ins='sudo zypper install'
-package_update() { sudo zypper refresh; }
-alias pkgupdate='package_update'
+alias update='sudo zypper refresh'
 alias upgrade='sudo zypper dup'   # use 'dup' if you run Tumbleweed
 alias search='zypper search'
 alias rem='sudo zypper remove'

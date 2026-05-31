@@ -4,8 +4,7 @@ echo "Packages to upgrade:"
 /usr/sbin/pkg version | grep -v = | wc -l
 
 alias ins='sudo pkg install'
-package_update() { sudo pkg update; }
-alias pkgupdate='package_update'
+alias update='sudo pkg update'
 alias upgrade='sudo pkg upgrade'
 alias search='sudo pkg search'
 alias rem='sudo pkg delete'
