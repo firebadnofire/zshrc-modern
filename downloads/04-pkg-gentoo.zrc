@@ -1,10 +1,11 @@
-__zmodules_add "Gentoo Package Manager"
+__zmodules_add "04-pkg-gentoo.zrc" "Gentoo Package Manager"
 
 echo "Packages to upgrade:"
 emerge -uDNpv @world | grep "^\[ebuild" | wc -l
 
 alias ins='sudo emerge -av'
-alias update='sudo emaint sync -a'
+package_update() { sudo emaint sync -a; }
+alias pkgupdate='package_update'
 alias upgrade='sudo emerge -uDN @world'
 alias search='emerge -s'
 alias rem='sudo emerge -C'

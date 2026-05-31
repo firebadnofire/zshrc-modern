@@ -1,4 +1,4 @@
-__zmodules_add "Mullvad Aliases"
+__zmodules_add "06-mullvad.zrc" "Mullvad Aliases"
 
 if command -v mullvad-exclude >/dev/null; then
     alias mlex='mullvad-exclude'

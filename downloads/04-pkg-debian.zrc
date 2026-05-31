@@ -1,10 +1,11 @@
-__zmodules_add "Debian Package Manager"
+__zmodules_add "04-pkg-debian.zrc" "Debian Package Manager"
 
 echo "Packages to upgrade:"
 apt list --upgradable 2>/dev/null | grep -v "Listing" | wc -l
 
 alias ins='sudo apt install'
-alias update='sudo apt update'
+package_update() { sudo apt update; }
+alias pkgupdate='package_update'
 alias upgrade='sudo apt upgrade'
 alias search='apt search'
 alias rem='sudo apt remove'

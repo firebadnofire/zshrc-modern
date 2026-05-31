@@ -1,4 +1,4 @@
-__zmodules_add "System Aliases"
+__zmodules_add "03-system-aliases.zrc" "System Aliases"
 
 alias f="find . -type f | fzy"
 alias tp='ping -c 4 google.com'

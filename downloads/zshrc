@@ -6,10 +6,178 @@ export EDITOR="vim"
 export GPG_TTY=$(tty)
 export MAIL="$HOME/Maildir"
 export ZSHRC_REMOTE_BASE="${ZSHRC_REMOTE_BASE:-https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main}"
+export ZSHRC_LOCAL_STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/zshrc"
+export ZSHRC_LOCAL_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zshrc"
+export ZSHRC_LOCAL_SHA256SUM="${ZSHRC_LOCAL_STATE_DIR}/downloads.sha256sum"
+export ZSHRC_REPO_SHA256SUM_CACHE="${ZSHRC_LOCAL_STATE_DIR}/downloads.repo.sha256sum"
+
+typeset -ga zmodules=()
 typeset -ga pretty_zmod_names=()
+typeset -gxT ZMODULES zmodules
+typeset -gxT PRETTY_ZMODULE_NAMES pretty_zmod_names
 
 __zmodules_add() {
-    pretty_zmod_names+=("$1")
+    zmodules+=("$1")
+
+    if [[ -n "${2:-}" ]]; then
+        pretty_zmod_names+=("$2")
+    fi
+}
+
+__zshrc_sha256() {
+    if command -v sha256sum >/dev/null 2>&1; then
+        sha256sum "$1" | awk '{print $1}'
+    elif command -v shasum >/dev/null 2>&1; then
+        shasum -a 256 "$1" | awk '{print $1}'
+    else
+        echo "No SHA-256 tool found. Install sha256sum or shasum." >&2
+        return 1
+    fi
+}
+
+__zshrc_manifest_target() {
+    case "$1" in
+        zshrc)
+            printf '%s\n' "$HOME/.zshrc"
+            ;;
+        firebadnofire.zsh-theme)
+            printf '%s\n' "$HOME/.oh-my-zsh/themes/firebadnofire.zsh-theme"
+            ;;
+        *.zrc)
+            printf '%s\n' "$HOME/.zshrc.d/$1"
+            ;;
+        *.sh)
+            printf '%s\n' "${ZSHRC_LOCAL_CACHE_DIR}/downloads/$1"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+__zshrc_refresh_local_sha256sum() {
+    local manifest_path="$ZSHRC_LOCAL_SHA256SUM"
+    local tmp_manifest
+    local file
+    local target
+    local hash
+
+    mkdir -p "$(dirname "$manifest_path")" "${ZSHRC_LOCAL_CACHE_DIR}/downloads"
+    tmp_manifest="$(mktemp)"
+
+    while IFS= read -r file; do
+        target="$(__zshrc_manifest_target "$file")" || continue
+        [[ -f "$target" ]] || continue
+
+        hash="$(__zshrc_sha256 "$target")" || {
+            rm -f "$tmp_manifest"
+            return 1
+        }
+
+        printf '%s  %s\n' "$hash" "$file" >> "$tmp_manifest"
+    done < <(sed -n 's/^[[:xdigit:]]\{64\}  downloads\/\(.*\)$/\1/p' "$ZSHRC_REPO_SHA256SUM_CACHE" 2>/dev/null)
+
+    mv "$tmp_manifest" "$manifest_path"
+}
+
+update() {
+    local mode="${1:-repo}"
+    local remote_manifest_url="${ZSHRC_REMOTE_BASE}/downloads.sha256sum"
+    local remote_manifest_tmp
+    local file
+    local remote_hash
+    local local_hash
+    local target
+    local download_tmp
+    local updated=0
+    local checked=0
+
+    if [[ "$mode" == "system" ]]; then
+        if whence -w package_update >/dev/null 2>&1; then
+            package_update
+            return $?
+        fi
+
+        echo "No package update command is configured for this shell." >&2
+        return 1
+    fi
+
+    if [[ "$mode" != "repo" ]]; then
+        echo "Usage: update [repo|system]" >&2
+        return 1
+    fi
+
+    mkdir -p "$(dirname "$ZSHRC_REPO_SHA256SUM_CACHE")" "$(dirname "$ZSHRC_LOCAL_SHA256SUM")" "${ZSHRC_LOCAL_CACHE_DIR}/downloads"
+    remote_manifest_tmp="$(mktemp)"
+
+    if ! curl --proto '=https' --tlsv1.3 -fsSL "$remote_manifest_url" -o "$remote_manifest_tmp"; then
+        echo "Failed to fetch remote manifest: $remote_manifest_url" >&2
+        rm -f "$remote_manifest_tmp"
+        return 1
+    fi
+
+    mv "$remote_manifest_tmp" "$ZSHRC_REPO_SHA256SUM_CACHE"
+
+    if ! __zshrc_refresh_local_sha256sum; then
+        echo "Failed to refresh local sha256 manifest." >&2
+        return 1
+    fi
+
+    while read -r remote_hash _ file; do
+        [[ -n "$file" ]] || continue
+        file="${file#downloads/}"
+        checked=$((checked + 1))
+        target="$(__zshrc_manifest_target "$file")" || continue
+        local_hash=""
+
+        if [[ -f "$target" ]]; then
+            local_hash="$(__zshrc_sha256 "$target")" || return 1
+        fi
+
+        if [[ "$local_hash" == "$remote_hash" ]]; then
+            continue
+        fi
+
+        download_tmp="$(mktemp)"
+
+        if ! curl --proto '=https' --tlsv1.3 -fsSL "${ZSHRC_REMOTE_BASE}/downloads/${file}" -o "$download_tmp"; then
+            echo "Failed to download ${file}." >&2
+            rm -f "$download_tmp"
+            return 1
+        fi
+
+        if [[ "$(__zshrc_sha256 "$download_tmp")" != "$remote_hash" ]]; then
+            echo "SHA-256 mismatch for ${file}." >&2
+            rm -f "$download_tmp"
+            return 1
+        fi
+
+        mkdir -p "$(dirname "$target")"
+        mv "$download_tmp" "$target"
+
+        case "$file" in
+            *.sh)
+                chmod 755 "$target"
+                ;;
+            *)
+                chmod 644 "$target"
+                ;;
+        esac
+
+        echo "Updated ${file}"
+        updated=$((updated + 1))
+    done < "$ZSHRC_REPO_SHA256SUM_CACHE"
+
+    if ! __zshrc_refresh_local_sha256sum; then
+        echo "Failed to refresh local sha256 manifest after update." >&2
+        return 1
+    fi
+
+    if (( updated == 0 )); then
+        echo "No repo updates found across ${checked} files."
+    else
+        echo "Applied ${updated} repo update(s)."
+    fi
 }
 
 # Universal aliases (POSIX, no system assumptions)
@@ -44,4 +212,4 @@ for f in "$HOME/.zshrc.d"/*.zrc; do
     [ -r "$f" ] && source "$f"
 done
 
-echo "${(j: | :)pretty_zmod_names}"
+echo "zmodules: ${(j: | :)pretty_zmod_names}"
