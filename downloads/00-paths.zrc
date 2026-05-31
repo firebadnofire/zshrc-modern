@@ -1,5 +1,3 @@
-__zmodules_add "Paths"
-
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.gem/bin:$HOME/.bun/bin:$HOME/.dotnet:$HOME/go/bin:/snap/bin"
 export GEM_HOME="$HOME/.gem"
 export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"

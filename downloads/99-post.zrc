@@ -1,5 +1,3 @@
-__zmodules_add "Post Startup"
-
 if [[ "${ZSHRC_SHOW_STARTUP_INFO:-1}" == "1" ]]; then
     command -v who >/dev/null 2>&1 && who
     TZ="${TZ:-America/New_York}" date
