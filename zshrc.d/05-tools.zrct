@@ -1,0 +1,32 @@
+export sn="192.168.86"
+export doq="quic://doh.archuser.org"
+export doh="https://doh.archuser.org/dns-query"
+export dot="tls://doh.archuser.org"
+
+alias mrun='echo \#\!/bin/bash > run.sh && nano run.sh && chmod +x run.sh'
+alias smrun='echo \#\!/bin/bash | sudo tee run.sh > /dev/null && sudo nano run.sh && sudo chmod +x run.sh'
+# Usage: pingoff host cmd
+# Ping a host until up, then run a cmd
+pingoff() {
+    local host="$1"
+    shift
+
+    if [[ -z "$host" || $# -eq 0 ]]; then
+        echo "Usage: pingoff <host> <command> [args...]"
+        return 1
+    fi
+
+    echo "Waiting for $host to respond..."
+
+    while true; do
+        if ping -c 1 -W 1 "$host" >/dev/null 2>&1; then
+            echo "$host is online"
+            "$@"
+            return $?
+        fi
+
+        sleep 1
+    done
+}
+
+typeset -fx pingoff
