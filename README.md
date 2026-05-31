@@ -154,6 +154,12 @@ Optional overlays:
 
 Root-level SHA-256 manifest for every file under `downloads/`. It is used by `zupdate` to compare the local state against upstream and only fetch files whose hashes differ.
 
+To refresh it locally, run:
+
+```bash
+./refresh-sha256sum.sh
+```
+
 ## Supported Distros
 
 Current base package installation support in `downloads/zsh.sh`:
