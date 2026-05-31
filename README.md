@@ -18,6 +18,11 @@ The repository can now be used in two ways:
 - remote-first through the published bootstrap URL
 - locally from a checked-out clone, where `downloads/zsh.sh` copies assets from the repository instead of re-downloading them
 
+Repository updates are handled separately from distro package refreshes:
+
+- `zupdate` checks the SHA-256 manifest and only re-downloads changed files from `downloads/`
+- `update` remains the distro-specific package manager refresh command inside each `04-pkg-*.zrc`
+
 ## Bootstrap
 
 To start from the published remote bootstrap script:
@@ -102,6 +107,9 @@ Runtime shell entry point. It:
 - bootstraps Oh My Zsh
 - ensures the custom theme is present
 - loads all `~/.zshrc.d/*.zrc` modules
+- exports `ZMODULES` and `PRETTY_ZMODULE_NAMES`
+- exposes `zupdate` for SHA-based per-file repository updates
+- prints `zmodules: ...` after startup so the loaded module order is visible
 
 If Oh My Zsh is missing, it exits cleanly instead of partially bootstrapping a broken shell.
 
@@ -141,6 +149,10 @@ Optional overlays:
 
 - `06-mullvad.zrc`: adds the `mlex` alias when `mullvad-exclude` is installed
 - `07-warn-docker.zrc`: warns before selected Docker commands to remind about `:Z` flags
+
+### `downloads.sha256sum`
+
+Root-level SHA-256 manifest for every file under `downloads/`. It is used by `zupdate` to compare the local state against upstream and only fetch files whose hashes differ.
 
 ## Supported Distros
 
@@ -182,6 +194,7 @@ This means the runtime shell config stays mostly uniform while package-manager c
 - Startup diagnostics remain enabled by default, but they can now be disabled by setting `ZSHRC_SHOW_STARTUP_INFO=0`.
 - Some shared aliases assume Linux tooling such as `systemctl`, so not every shared module is fully portable across every supported platform.
 - The theme fetch path is now aligned with `downloads/` under `ZSHRC_REMOTE_BASE`.
+- `update` stays tied to distro package managers; use `zupdate` for repository file refreshes.
 - Install-time generated files still exist, such as `~/.zshrc.d/08-golang.zrc`.
 
 ## Development
@@ -191,6 +204,7 @@ When changing this repository, keep the current layering intact:
 - update `downloads/zsh.sh` when changing installer behavior
 - update `downloads/zshrc` for shell bootstrap/runtime changes
 - update files in `downloads/` for shared shell behavior and overlays
+- update `downloads.sha256sum` whenever the contents of `downloads/` change
 
 If you add a new distro, update both:
 
