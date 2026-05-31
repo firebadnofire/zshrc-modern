@@ -1,4 +1,4 @@
-__zmodules_add "${(%):-%N}"
+__zmodules_add "Docker Warning Hook"
 
 # Warn about missing :Z flags when bringing up containers
 

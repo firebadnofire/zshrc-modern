@@ -1,4 +1,4 @@
-__zmodules_add "${(%):-%N}"
+__zmodules_add "Arch Package Manager"
 
 echo "Packages to upgrade:"
 pacman -Qu 2>/dev/null | wc -l

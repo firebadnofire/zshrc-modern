@@ -1,4 +1,4 @@
-__zmodules_add "${(%):-%N}"
+__zmodules_add "RHEL Package Manager"
 
 echo "Packages to upgrade:"
 dnf check-update --refresh 2>/dev/null | grep -v "^Last metadata" | wc -l

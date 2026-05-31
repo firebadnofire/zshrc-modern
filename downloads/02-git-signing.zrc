@@ -1,4 +1,4 @@
-__zmodules_add "${(%):-%N}"
+__zmodules_add "Git Signing Config"
 
 gpg_key_id="none"
 ssh_key="$HOME/.ssh/id_ed25519.pub"
