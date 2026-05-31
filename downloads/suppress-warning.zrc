@@ -1,1 +1,3 @@
+__zmodules_add "${(%):-%N}"
+
 # This file is to suppress warnings of no files being loaded.

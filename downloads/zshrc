@@ -6,6 +6,24 @@ export EDITOR="vim"
 export GPG_TTY=$(tty)
 export MAIL="$HOME/Maildir"
 export ZSHRC_REMOTE_BASE="${ZSHRC_REMOTE_BASE:-https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main}"
+typeset -g zmodules=""
+
+__zmodules_add() {
+    local module_path="${1:A}"
+    local relative_path="${module_path}"
+
+    if [[ "${module_path}" == */.zshrc.d/* ]]; then
+        relative_path=".zshrc.d/${module_path##*/}"
+    elif [[ "${module_path}" == "${HOME}/"* ]]; then
+        relative_path="${module_path#${HOME}/}"
+    fi
+
+    if [[ -n "${zmodules}" ]]; then
+        zmodules="${zmodules} ${relative_path}"
+    else
+        zmodules="${relative_path}"
+    fi
+}
 
 # Universal aliases (POSIX, no system assumptions)
 alias cls="clear"
@@ -27,7 +45,7 @@ fi
 
 if [[ ! -f "$THEME_FILE" ]] && command -v curl >/dev/null 2>&1; then
     mkdir -p "$HOME/.oh-my-zsh/themes"
-    curl -fsSL "$ZSHRC_REMOTE_BASE/firebadnofire.zsh-theme" -o "$THEME_FILE"
+    curl -fsSL "$ZSHRC_REMOTE_BASE/downloads/firebadnofire.zsh-theme" -o "$THEME_FILE"
 fi
 
 ZSH_THEME="firebadnofire"
@@ -38,3 +56,5 @@ source "$ZSH/oh-my-zsh.sh"
 for f in "$HOME/.zshrc.d"/*.zrc; do
     [ -r "$f" ] && source "$f"
 done
+
+echo "${zmodules}"

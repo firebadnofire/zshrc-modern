@@ -1,3 +1,5 @@
+__zmodules_add "${(%):-%N}"
+
 echo "Packages to upgrade:"
 emerge -uDNpv @world | grep "^\[ebuild" | wc -l
 

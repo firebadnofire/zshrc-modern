@@ -1,3 +1,5 @@
+__zmodules_add "${(%):-%N}"
+
 # Warn about missing :Z flags when bringing up containers
 
 autoload -Uz add-zsh-hook

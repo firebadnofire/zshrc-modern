@@ -1,3 +1,5 @@
+__zmodules_add "${(%):-%N}"
+
 echo "Packages to upgrade:"
 zypper list-updates | grep -v "^Loading" | grep -v "^$" | wc -l
 

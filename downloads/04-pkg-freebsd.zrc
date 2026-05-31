@@ -1,3 +1,5 @@
+__zmodules_add "${(%):-%N}"
+
 echo "Packages to upgrade:"
 /usr/sbin/pkg version | grep -v = | wc -l
 

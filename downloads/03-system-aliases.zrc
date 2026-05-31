@@ -1,3 +1,5 @@
+__zmodules_add "${(%):-%N}"
+
 alias f="find . -type f | fzy"
 alias tp='ping -c 4 google.com'
 alias tlp='ping -c 4 192.168.86.1'

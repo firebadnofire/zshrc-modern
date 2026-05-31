@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REMOTE_RAW_BASE="${ZSHRC_REMOTE_BASE:-https://pubcode.archuser.org/firebadnofire/zshrc/raw/branch/main}"
+DOWNLOADS_REMOTE_BASE="${REMOTE_RAW_BASE}/downloads"
 
 declare -A PKGS=(
     [debian]="aria2 zip make gnupg gnupg2 curl zsh git unzip sudo lsb-release p7zip-full fzy"
@@ -14,21 +15,21 @@ declare -A PKGS=(
 )
 
 declare -A DISTRO_OVERLAYS=(
-    [debian]="user-selection/04-pkg-debian.zrc"
-    [arch]="user-selection/04-pkg-arch.zrc"
-    [rhel]="user-selection/04-pkg-rhel.zrc"
-    [opensuse]="user-selection/04-pkg-opensuse-tumble.zrc"
-    [freebsd]="user-selection/04-pkg-freebsd.zrc"
-    [gentoo]="user-selection/04-pkg-gentoo.zrc"
+    [debian]="04-pkg-debian.zrc"
+    [arch]="04-pkg-arch.zrc"
+    [rhel]="04-pkg-rhel.zrc"
+    [opensuse]="04-pkg-opensuse-tumble.zrc"
+    [freebsd]="04-pkg-freebsd.zrc"
+    [gentoo]="04-pkg-gentoo.zrc"
 )
 
 SHARED_MODULES=(
-    "zshrc.d/00-paths.zrc"
-    "zshrc.d/02-git-signing.zrc"
-    "zshrc.d/03-system-aliases.zrc"
-    "zshrc.d/05-tools.zrc"
-    "zshrc.d/99-post.zrc"
-    "zshrc.d/suppress-warning.zrc"
+    "00-paths.zrc"
+    "02-git-signing.zrc"
+    "03-system-aliases.zrc"
+    "05-tools.zrc"
+    "99-post.zrc"
+    "suppress-warning.zrc"
 )
 
 copy_asset() {
@@ -41,7 +42,7 @@ copy_asset() {
     if [[ -f "${source_path}" ]]; then
         cp "${source_path}" "${destination}"
     else
-        curl -fsSL "${REMOTE_RAW_BASE}/${relative_path}" -o "${destination}"
+        curl -fsSL "${DOWNLOADS_REMOTE_BASE}/${relative_path}" -o "${destination}"
     fi
 }
 
@@ -227,8 +228,8 @@ EOF
             8) install_rust ;;
             9) install_zshrc ;;
             10) install_fastfetch ;;
-            11) install_optional_overlay "user-selection/06-mullvad.zrc" ;;
-            12) install_optional_overlay "user-selection/07-warn-docker.zrc" ;;
+            11) install_optional_overlay "06-mullvad.zrc" ;;
+            12) install_optional_overlay "07-warn-docker.zrc" ;;
             13) install_golang ;;
             0) install_local_ssh_key ;;
             e|E) break ;;

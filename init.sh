@@ -8,7 +8,7 @@ main() {
     local script
 
     for script in zsh.sh fastfetch.sh golang.sh; do
-        curl -fsSL "${REMOTE_RAW_BASE}/${script}" -o "${TMP_DIR}/${script}"
+        curl -fsSL "${REMOTE_RAW_BASE}/downloads/${script}" -o "${TMP_DIR}/${script}"
         chmod +x "${TMP_DIR}/${script}"
     done
 

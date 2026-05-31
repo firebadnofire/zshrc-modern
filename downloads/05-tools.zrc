@@ -1,3 +1,5 @@
+__zmodules_add "${(%):-%N}"
+
 export sn="192.168.86"
 export doq="quic://doh.archuser.org"
 export doh="https://doh.archuser.org/dns-query"
@@ -5,6 +7,7 @@ export dot="tls://doh.archuser.org"
 
 alias mrun='echo \#\!/bin/bash > run.sh && nano run.sh && chmod +x run.sh'
 alias smrun='echo \#\!/bin/bash | sudo tee run.sh > /dev/null && sudo nano run.sh && sudo chmod +x run.sh'
+
 # Usage: pingoff host cmd
 # Ping a host until up, then run a cmd
 pingoff() {

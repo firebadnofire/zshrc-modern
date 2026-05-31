@@ -1,3 +1,5 @@
+__zmodules_add "${(%):-%N}"
+
 echo "Packages to upgrade:"
 dnf check-update --refresh 2>/dev/null | grep -v "^Last metadata" | wc -l
 

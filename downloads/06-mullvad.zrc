@@ -1,3 +1,5 @@
+__zmodules_add "${(%):-%N}"
+
 if command -v mullvad-exclude >/dev/null; then
     alias mlex='mullvad-exclude'
 fi
