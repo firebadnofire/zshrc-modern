@@ -31,3 +31,31 @@ pingoff() {
         sleep 1
     done
 }
+
+# Usage: mins <integer>
+# Convert minutes to seconds
+_time_to_seconds() {
+    local name="${FUNCNAME[1]}"
+    local amount="$1"
+    local factor="$2"
+
+    if [[ $# -ne 2 || ! "$amount" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+        echo "Usage: $name <amount>" >&2
+        return 1
+    fi
+
+    awk -v amount="$amount" -v factor="$factor" '
+        BEGIN {
+            seconds = amount * factor
+            if (seconds == int(seconds))
+                printf "%.0f\n", seconds
+            else
+                print seconds
+        }
+    '
+}
+
+mins()  { _time_to_seconds "$1" 60; }
+hrs()   { _time_to_seconds "$1" 3600; }
+days()  { _time_to_seconds "$1" 86400; }
+weeks() { _time_to_seconds "$1" 604800; }
