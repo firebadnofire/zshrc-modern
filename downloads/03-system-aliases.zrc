@@ -16,6 +16,7 @@ if command -v systemctl >/dev/null 2>&1; then
     alias stats="sudo systemctl status"
     alias restarts="sudo systemctl restart"
     alias kills="sudo systemctl kill"
+    alias dre="sudo systemctl daemon-reload"
 
     alias startu="systemctl --user start"
     alias stopu="systemctl --user stop"
@@ -23,6 +24,7 @@ if command -v systemctl >/dev/null 2>&1; then
     alias statu="systemctl --user status"
     alias restartu="systemctl --user restart"
     alias killu="systemctl --user kill"
+    alias dreu="systemctl --user daemon-reload"
 fi
 
 alias rport='echo $((49152 + RANDOM % (65535 - 49152 + 1)))'
