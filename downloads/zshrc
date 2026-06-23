@@ -35,6 +35,70 @@ __zshrc_sha256() {
     fi
 }
 
+# Startup caches live under $ZSHRC_LOCAL_CACHE_DIR, which defaults to
+# ${XDG_CACHE_HOME:-$HOME/.cache}/zshrc. Example cache files:
+#   ${XDG_CACHE_HOME:-$HOME/.cache}/zshrc/pkg-upgrades-gentoo
+#   ${XDG_CACHE_HOME:-$HOME/.cache}/zshrc/flatpak-upgrades
+__zshrc_cache_file() {
+    printf '%s/%s\n' "$ZSHRC_LOCAL_CACHE_DIR" "$1"
+}
+
+__zshrc_cache_fresh() {
+    local cache_file="$1"
+    local ttl="$2"
+    local now
+    local mtime
+
+    [[ -f "$cache_file" ]] || return 1
+
+    now="$(date +%s)" || return 1
+
+    if command -v stat >/dev/null 2>&1; then
+        if mtime="$(stat -c %Y "$cache_file" 2>/dev/null)"; then
+            :
+        elif mtime="$(stat -f %m "$cache_file" 2>/dev/null)"; then
+            :
+        else
+            return 1
+        fi
+    else
+        return 1
+    fi
+
+    (( now - mtime < ttl ))
+}
+
+__zshrc_cached_eval() {
+    local cache_key="$1"
+    local ttl="$2"
+    local cmd="$3"
+    local cache_file
+    local output
+
+    mkdir -p "$ZSHRC_LOCAL_CACHE_DIR"
+    cache_file="$(__zshrc_cache_file "$cache_key")"
+
+    if __zshrc_cache_fresh "$cache_file" "$ttl"; then
+        cat "$cache_file"
+        return 0
+    fi
+
+    output="$(eval "$cmd" 2>/dev/null)" || output=""
+    printf '%s\n' "$output" > "$cache_file"
+    printf '%s\n' "$output"
+}
+
+__zshrc_should_manage_missing_target() {
+    case "$1" in
+        zshrc|firebadnofire.zsh-theme|00-paths.zrc|02-git-signing.zrc|03-system-aliases.zrc|05-tools.zrc|99-post.zrc|suppress-warning.zrc|*.sh)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
 __zshrc_manifest_target() {
     case "$1" in
         zshrc)
@@ -125,6 +189,10 @@ zupdate() {
         checked=$((checked + 1))
         target="$(__zshrc_manifest_target "$file")" || continue
         local_hash=""
+
+        if [[ ! -f "$target" ]] && ! __zshrc_should_manage_missing_target "$file"; then
+            continue
+        fi
 
         if [[ -f "$target" ]]; then
             local_hash="$(__zshrc_sha256 "$target")" || return 1

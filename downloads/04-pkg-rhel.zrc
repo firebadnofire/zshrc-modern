@@ -1,7 +1,9 @@
 __zmodules_add "04-pkg-rhel.zrc" "RHEL Package Manager"
 
-echo "Packages to upgrade:"
-dnf check-update --refresh 2>/dev/null | grep -v "^Last metadata" | wc -l
+if command -v dnf >/dev/null 2>&1; then
+    echo "Packages to upgrade:"
+    __zshrc_cached_eval "pkg-upgrades-rhel" 1800 "dnf check-update --refresh | grep -v '^Last metadata' | wc -l"
+fi
 
 alias ins='sudo dnf install'
 alias update='sudo dnf check-update'

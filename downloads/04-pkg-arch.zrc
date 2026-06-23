@@ -1,7 +1,9 @@
 __zmodules_add "04-pkg-arch.zrc" "Arch Package Manager"
 
-echo "Packages to upgrade:"
-pacman -Qu 2>/dev/null | wc -l
+if command -v pacman >/dev/null 2>&1; then
+    echo "Packages to upgrade:"
+    __zshrc_cached_eval "pkg-upgrades-arch" 1800 "pacman -Qu | wc -l"
+fi
 
 alias ins='sudo pacman -S'
 alias update='sudo pacman -Sy'

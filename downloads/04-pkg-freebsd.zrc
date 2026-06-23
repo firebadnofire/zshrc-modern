@@ -1,7 +1,9 @@
 __zmodules_add "04-pkg-freebsd.zrc" "FreeBSD Package Manager"
 
-echo "Packages to upgrade:"
-/usr/sbin/pkg version | grep -v = | wc -l
+if [[ -x /usr/sbin/pkg ]]; then
+    echo "Packages to upgrade:"
+    __zshrc_cached_eval "pkg-upgrades-freebsd" 1800 "/usr/sbin/pkg version | grep -v '=' | wc -l"
+fi
 
 alias ins='sudo pkg install'
 alias update='sudo pkg update'

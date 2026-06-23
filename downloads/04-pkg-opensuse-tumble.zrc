@@ -1,7 +1,9 @@
 __zmodules_add "04-pkg-opensuse-tumble.zrc" "OpenSUSE Package Manager"
 
-echo "Packages to upgrade:"
-zypper list-updates | grep -v "^Loading" | grep -v "^$" | wc -l
+if command -v zypper >/dev/null 2>&1; then
+    echo "Packages to upgrade:"
+    __zshrc_cached_eval "pkg-upgrades-opensuse" 1800 "zypper list-updates | grep -v '^Loading' | grep -v '^$' | wc -l"
+fi
 
 alias ins='sudo zypper install'
 alias update='sudo zypper refresh'
