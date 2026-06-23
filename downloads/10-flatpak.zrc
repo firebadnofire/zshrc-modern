@@ -1,0 +1,18 @@
+__zmodules_add "10-flatpak.zrc" "Flatpak"
+
+if command -v flatpak >/dev/null 2>&1; then
+    echo "Flatpaks to upgrade:"
+    __zshrc_cached_eval "flatpak-upgrades" "$ZSHRC_STARTUP_CACHE_TTL" "flatpak remote-ls --updates | wc -l"
+
+    alias fins='flatpak install'
+    alias fupdate='flatpak update --appstream'
+    alias fupgrade='flatpak update'
+    alias fsearch='flatpak search'
+    alias frem='flatpak uninstall'
+
+    if [[ -n "${PKGMGR:-}" ]]; then
+        PKGMGR="$PKGMGR, flatpak"
+    else
+        PKGMGR='flatpak'
+    fi
+fi

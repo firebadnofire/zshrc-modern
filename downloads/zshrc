@@ -10,6 +10,7 @@ export ZSHRC_LOCAL_STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/zshrc"
 export ZSHRC_LOCAL_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zshrc"
 export ZSHRC_LOCAL_SHA256SUM="${ZSHRC_LOCAL_STATE_DIR}/downloads.sha256sum"
 export ZSHRC_REPO_SHA256SUM_CACHE="${ZSHRC_LOCAL_STATE_DIR}/downloads.repo.sha256sum"
+export ZSHRC_STARTUP_CACHE_TTL="${ZSHRC_STARTUP_CACHE_TTL:-1800}"
 
 typeset -ga zmodules=()
 typeset -ga pretty_zmod_names=()
@@ -88,9 +89,51 @@ __zshrc_cached_eval() {
     printf '%s\n' "$output"
 }
 
+__zshrc_refresh_cached_eval() {
+    local cache_key="$1"
+    local cmd="$2"
+    local cache_file
+    local output
+
+    mkdir -p "$ZSHRC_LOCAL_CACHE_DIR"
+    cache_file="$(__zshrc_cache_file "$cache_key")"
+    output="$(eval "$cmd" 2>/dev/null)" || output=""
+    printf '%s\n' "$output" > "$cache_file"
+}
+
+__zshrc_refresh_startup_caches() {
+    if command -v pacman >/dev/null 2>&1; then
+        __zshrc_refresh_cached_eval "pkg-upgrades-arch" "pacman -Qu | wc -l"
+    fi
+
+    if command -v apt >/dev/null 2>&1; then
+        __zshrc_refresh_cached_eval "pkg-upgrades-debian" "apt list --upgradable | grep -v 'Listing' | wc -l"
+    fi
+
+    if [[ -x /usr/sbin/pkg ]]; then
+        __zshrc_refresh_cached_eval "pkg-upgrades-freebsd" "/usr/sbin/pkg version | grep -v '=' | wc -l"
+    fi
+
+    if command -v emerge >/dev/null 2>&1; then
+        __zshrc_refresh_cached_eval "pkg-upgrades-gentoo" "emerge -uDNpv @world | grep '^\[ebuild' | wc -l"
+    fi
+
+    if command -v zypper >/dev/null 2>&1; then
+        __zshrc_refresh_cached_eval "pkg-upgrades-opensuse" "zypper list-updates | grep -v '^Loading' | grep -v '^$' | wc -l"
+    fi
+
+    if command -v dnf >/dev/null 2>&1; then
+        __zshrc_refresh_cached_eval "pkg-upgrades-rhel" "dnf check-update --refresh | grep -v '^Last metadata' | wc -l"
+    fi
+
+    if command -v flatpak >/dev/null 2>&1; then
+        __zshrc_refresh_cached_eval "flatpak-upgrades" "flatpak remote-ls --updates | wc -l"
+    fi
+}
+
 __zshrc_should_manage_missing_target() {
     case "$1" in
-        zshrc|firebadnofire.zsh-theme|00-paths.zrc|02-git-signing.zrc|03-system-aliases.zrc|05-tools.zrc|99-post.zrc|suppress-warning.zrc|*.sh)
+        zshrc|firebadnofire.zsh-theme|00-paths.zrc|02-git-signing.zrc|03-system-aliases.zrc|05-tools.zrc|10-flatpak.zrc|99-post.zrc|suppress-warning.zrc|*.sh)
             return 0
             ;;
         *)

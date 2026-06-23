@@ -1,0 +1,7 @@
+[Unit]
+Description=Refresh zshrc startup caches
+
+[Service]
+Type=oneshot
+Environment=ZSHRC_SHOW_STARTUP_INFO=0
+ExecStart=/usr/bin/env zsh -ic 'source "$HOME/.zshrc" >/dev/null 2>&1 && __zshrc_refresh_startup_caches'

@@ -28,6 +28,7 @@ SHARED_MODULES=(
     "02-git-signing.zrc"
     "03-system-aliases.zrc"
     "05-tools.zrc"
+    "10-flatpak.zrc"
     "99-post.zrc"
     "suppress-warning.zrc"
 )
@@ -111,6 +112,34 @@ install_distro() {
     install_distro_overlay "${os_type}"
 }
 
+install_startup_cache_timer() {
+    local systemd_user_dir="${HOME}/.config/systemd/user"
+    local service_path="${systemd_user_dir}/zshrc-startup-cache.service"
+    local timer_path="${systemd_user_dir}/zshrc-startup-cache.timer"
+
+    if ! command -v systemctl >/dev/null 2>&1; then
+        echo "systemctl not found; skipping zshrc startup cache timer install."
+        return 0
+    fi
+
+    if ! systemctl --user show-environment >/dev/null 2>&1; then
+        echo "systemd user units are unavailable; skipping zshrc startup cache timer install."
+        return 0
+    fi
+
+    if [[ -f "${service_path}" && -f "${timer_path}" ]]; then
+        echo "zshrc startup cache timer already installed; skipping."
+        return 0
+    fi
+
+    mkdir -p "${systemd_user_dir}"
+    copy_asset "zshrc-startup-cache.service" "${service_path}"
+    copy_asset "zshrc-startup-cache.timer" "${timer_path}"
+
+    systemctl --user daemon-reload
+    systemctl --user enable --now zshrc-startup-cache.timer
+}
+
 install_rust() {
     echo "Installing Rust..."
     curl --proto '=https' --tlsv1.3 -sSf https://sh.rustup.rs | sh
@@ -137,6 +166,8 @@ install_zshrc() {
     for module in "${SHARED_MODULES[@]}"; do
         copy_asset "${module}" "${HOME}/.zshrc.d/$(basename "${module}")"
     done
+
+    install_startup_cache_timer
 
     if [[ ! -d "${omz_dir}/plugins/cmdtime" ]]; then
         git clone https://github.com/tom-auger/cmdtime "${omz_dir}/plugins/cmdtime"
