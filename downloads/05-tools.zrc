@@ -115,3 +115,13 @@ rerelease () {
 
 	print "Re-released $ver"
 }
+
+# Usage update-grub
+# Makes a new grub.cfg
+if [[ -f /etc/default/grub ]] && ! command -v update-grub >/dev/null 2>&1; then
+    if command -v grub2-mkconfig >/dev/null 2>&1; then
+        alias update-grub='sudo grub2-mkconfig -o /boot/grub2/grub.cfg'
+    elif command -v grub-mkconfig >/dev/null 2>&1; then
+        alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
+    fi
+fi
