@@ -3,5 +3,5 @@ if [[ "${ZSHRC_SHOW_STARTUP_INFO:-1}" == "1" ]]; then
     TZ="${TZ:-America/New_York}" date
     [[ -t 0 ]] && stty sane 2>/dev/null
     echo "Package manager: ${PKGMGR:-unknown}"
-#    echo "Git commit signer: ${gitsign:-unknown}"
+    echo "Git commit signer: ${gitsign:-unknown}"
 fi
