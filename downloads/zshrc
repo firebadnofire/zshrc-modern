@@ -90,6 +90,7 @@ zupdate() {
     local target
     local download_tmp
     local updated=0
+    local updated_zshrc=0
     local checked=0
     local parsed=0
 
@@ -159,6 +160,10 @@ zupdate() {
                 ;;
         esac
 
+        if [[ "$file" == "zshrc" ]]; then
+            updated_zshrc=1
+        fi
+
         echo "Updated ${file}"
         updated=$((updated + 1))
     done < "$ZSHRC_REPO_SHA256SUM_CACHE"
@@ -171,6 +176,11 @@ zupdate() {
     if ! __zshrc_refresh_local_sha256sum; then
         echo "Failed to refresh local sha256 manifest after update." >&2
         return 1
+    fi
+
+    if (( updated_zshrc )); then
+        source "$HOME/.zshrc"
+        echo "Reloaded ~/.zshrc"
     fi
 
     if (( updated == 0 )); then
