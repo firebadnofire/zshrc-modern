@@ -83,6 +83,7 @@ __zshrc_refresh_local_sha256sum() {
 zupdate() {
     local remote_manifest_url="${ZSHRC_REMOTE_BASE}/downloads.sha256sum"
     local remote_manifest_tmp
+    local line
     local file
     local remote_hash
     local local_hash
@@ -90,6 +91,7 @@ zupdate() {
     local download_tmp
     local updated=0
     local checked=0
+    local parsed=0
 
     if (( $# > 0 )); then
         echo "Usage: zupdate" >&2
@@ -111,9 +113,14 @@ zupdate() {
         return 1
     fi
 
-    while read -r remote_hash _ file; do
-        [[ -n "$file" ]] || continue
-        file="${file#downloads/}"
+    while IFS= read -r line; do
+        if [[ ! "$line" =~ '^([[:xdigit:]]{64})  downloads/(.+)$' ]]; then
+            continue
+        fi
+
+        remote_hash="$match[1]"
+        file="$match[2]"
+        parsed=$((parsed + 1))
         checked=$((checked + 1))
         target="$(__zshrc_manifest_target "$file")" || continue
         local_hash=""
@@ -155,6 +162,11 @@ zupdate() {
         echo "Updated ${file}"
         updated=$((updated + 1))
     done < "$ZSHRC_REPO_SHA256SUM_CACHE"
+
+    if (( parsed == 0 )); then
+        echo "Remote manifest did not contain any valid downloads entries." >&2
+        return 1
+    fi
 
     if ! __zshrc_refresh_local_sha256sum; then
         echo "Failed to refresh local sha256 manifest after update." >&2
