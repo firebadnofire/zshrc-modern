@@ -118,23 +118,28 @@ install_rust() {
 
 install_zshrc() {
     local module
+    local omz_dir="${HOME}/.oh-my-zsh"
 
-    echo "Installing Oh My Zsh..."
-    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    if [[ -d "${omz_dir}" ]]; then
+        echo "Oh My Zsh already present at ${omz_dir}; skipping bootstrap."
+    else
+        echo "Installing Oh My Zsh..."
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    fi
 
     echo "Deploying Zsh config files..."
-    mkdir -p "${HOME}/.zshrc.d" "${HOME}/.oh-my-zsh/themes" "${HOME}/.oh-my-zsh/plugins"
+    mkdir -p "${HOME}/.zshrc.d" "${omz_dir}/themes" "${omz_dir}/plugins"
 
     backup_existing_file "${HOME}/.zshrc"
     copy_asset "zshrc" "${HOME}/.zshrc"
-    copy_asset "firebadnofire.zsh-theme" "${HOME}/.oh-my-zsh/themes/firebadnofire.zsh-theme"
+    copy_asset "firebadnofire.zsh-theme" "${omz_dir}/themes/firebadnofire.zsh-theme"
 
     for module in "${SHARED_MODULES[@]}"; do
         copy_asset "${module}" "${HOME}/.zshrc.d/$(basename "${module}")"
     done
 
-    if [[ ! -d "${HOME}/.oh-my-zsh/plugins/cmdtime" ]]; then
-        git clone https://github.com/tom-auger/cmdtime "${HOME}/.oh-my-zsh/plugins/cmdtime"
+    if [[ ! -d "${omz_dir}/plugins/cmdtime" ]]; then
+        git clone https://github.com/tom-auger/cmdtime "${omz_dir}/plugins/cmdtime"
     fi
 }
 

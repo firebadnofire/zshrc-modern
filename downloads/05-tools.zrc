@@ -59,3 +59,59 @@ mins()  { _time_to_seconds "$1" 60; }
 hrs()   { _time_to_seconds "$1" 3600; }
 days()  { _time_to_seconds "$1" 86400; }
 weeks() { _time_to_seconds "$1" 604800; }
+
+# Usage release tag_name
+# release a git tag
+release() {
+  setopt localoptions err_return pipefail
+
+  local ver="$1"
+
+  if [[ -z "$ver" ]]; then
+    print "Usage: git_release <version>"
+    return 1
+  fi
+
+  if git rev-parse "$ver" >/dev/null 2>&1; then
+    print "Tag $ver already exists"
+    return 1
+  fi
+
+  git tag -a "$ver" -m "$ver"
+  git push origin "$ver"
+  git push
+
+  print "Released $ver"
+}
+
+# Usage rerelease tag_name
+# rerelease a git tag
+rerelease () {
+	setopt localoptions err_return pipefail
+
+	local ver="$1"
+
+	if [[ -z "$ver" ]]
+	then
+		print "Usage: rerelease <version>"
+		return 1
+	fi
+
+	# Delete local tag if it exists
+	if git rev-parse "$ver" >/dev/null 2>&1
+	then
+		git tag -d "$ver"
+	fi
+
+	# Delete remote tag if it exists
+	git push origin ":refs/tags/$ver" || true
+
+	# Recreate and push tag
+	git tag -a "$ver" -m "$ver"
+	git push origin "$ver"
+
+	# Push current branch too, matching your release function
+	git push
+
+	print "Re-released $ver"
+}
