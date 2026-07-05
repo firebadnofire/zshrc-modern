@@ -1,0 +1,42 @@
+__zmodules_add "06-emerge.zrc" "Gentoo Maintenance Status"
+
+if command -v emerge >/dev/null 2>&1; then
+    cache_dir="${ZSHRC_LOCAL_CACHE_DIR}"
+    sync_state_file="${cache_dir}/gentoo-emaint-sync"
+    upgrade_state_file="${cache_dir}/gentoo-emerge-world"
+    repo_ts_file="/var/db/repos/gentoo/metadata/timestamp"
+    latest_ts=0
+    now_ts=""
+
+    mkdir -p "$cache_dir"
+
+    if [[ -r "$sync_state_file" ]]; then
+        sync_ts="$(<"$sync_state_file")"
+        [[ "$sync_ts" =~ ^[0-9]+$ ]] && (( sync_ts > latest_ts )) && latest_ts=$sync_ts
+    fi
+
+    if [[ -r "$upgrade_state_file" ]]; then
+        upgrade_ts="$(<"$upgrade_state_file")"
+        [[ "$upgrade_ts" =~ ^[0-9]+$ ]] && (( upgrade_ts > latest_ts )) && latest_ts=$upgrade_ts
+    fi
+
+    if (( latest_ts == 0 )) && [[ -r "$repo_ts_file" ]]; then
+        if latest_ts="$(stat -c %Y "$repo_ts_file" 2>/dev/null)"; then
+            :
+        elif latest_ts="$(stat -f %m "$repo_ts_file" 2>/dev/null)"; then
+            :
+        else
+            latest_ts=0
+        fi
+    fi
+
+    if (( latest_ts > 0 )); then
+        now_ts="$(date +%s)"
+        delta=$((now_ts - latest_ts))
+        days=$((delta / 86400))
+        hrs=$(((delta % 86400) / 3600))
+        echo "Last \`emaint -a sync\` & \`emerge -avuDN @world\`: ${days}d ${hrs}h ago"
+    else
+        echo "Last \`emaint -a sync\` & \`emerge -avuDN @world\`: unknown"
+    fi
+fi

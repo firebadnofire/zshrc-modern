@@ -28,6 +28,7 @@ SHARED_MODULES=(
     "02-git-signing.zrc"
     "03-system-aliases.zrc"
     "05-tools.zrc"
+    "06-emerge.zrc"
     "10-flatpak.zrc"
     "99-post.zrc"
     "suppress-warning.zrc"
@@ -45,6 +46,19 @@ copy_asset() {
     else
         curl -fsSL "${DOWNLOADS_REMOTE_BASE}/${relative_path}" -o "${destination}"
     fi
+}
+
+sync_asset_if_changed() {
+    local relative_path=$1
+    local destination=$2
+    local source_path="${SCRIPT_DIR}/${relative_path}"
+
+    if [[ -f "${source_path}" && -f "${destination}" ]] && cmp -s "${source_path}" "${destination}"; then
+        return 2
+    fi
+
+    copy_asset "${relative_path}" "${destination}" || return 1
+    return 0
 }
 
 backup_existing_file() {
@@ -116,6 +130,7 @@ install_startup_cache_timer() {
     local systemd_user_dir="${HOME}/.config/systemd/user"
     local service_path="${systemd_user_dir}/zshrc-startup-cache.service"
     local timer_path="${systemd_user_dir}/zshrc-startup-cache.timer"
+    local updated=0
 
     if ! command -v systemctl >/dev/null 2>&1; then
         echo "systemctl not found; skipping zshrc startup cache timer install."
@@ -127,17 +142,32 @@ install_startup_cache_timer() {
         return 0
     fi
 
-    if [[ -f "${service_path}" && -f "${timer_path}" ]]; then
+    if [[ -f "${service_path}" && -f "${timer_path}" ]] \
+        && cmp -s "${SCRIPT_DIR}/zshrc-startup-cache.service" "${service_path}" \
+        && cmp -s "${SCRIPT_DIR}/zshrc-startup-cache.timer" "${timer_path}"; then
         echo "zshrc startup cache timer already installed; skipping."
         return 0
     fi
 
     mkdir -p "${systemd_user_dir}"
-    copy_asset "zshrc-startup-cache.service" "${service_path}"
-    copy_asset "zshrc-startup-cache.timer" "${timer_path}"
+    if sync_asset_if_changed "zshrc-startup-cache.service" "${service_path}"; then
+        updated=1
+    elif [[ $? -ne 2 ]]; then
+        return 1
+    fi
+
+    if sync_asset_if_changed "zshrc-startup-cache.timer" "${timer_path}"; then
+        updated=1
+    elif [[ $? -ne 2 ]]; then
+        return 1
+    fi
 
     systemctl --user daemon-reload
     systemctl --user enable --now zshrc-startup-cache.timer
+
+    if (( updated )); then
+        systemctl --user restart zshrc-startup-cache.timer
+    fi
 }
 
 install_rust() {

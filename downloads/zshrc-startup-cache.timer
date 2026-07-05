@@ -3,7 +3,7 @@ Description=Refresh zshrc startup caches periodically
 
 [Timer]
 OnBootSec=5m
-OnUnitActiveSec=45m
+OnUnitActiveSec=15m
 AccuracySec=1m
 Persistent=true
 Unit=zshrc-startup-cache.service

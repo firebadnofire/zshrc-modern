@@ -5,9 +5,40 @@ if command -v emerge >/dev/null 2>&1; then
     __zshrc_cached_eval "pkg-upgrades-gentoo" 1800 "emerge -uDNpv @world | grep '^\[ebuild' | wc -l"
 fi
 
+__zshrc_gentoo_status_state_file() {
+    printf '%s/%s\n' "${ZSHRC_LOCAL_CACHE_DIR}" "$1"
+}
+
+__zshrc_gentoo_status_record() {
+    local state_file="$1"
+
+    mkdir -p "${ZSHRC_LOCAL_CACHE_DIR}"
+    date +%s > "$state_file"
+}
+
+update() {
+    sudo emaint sync -a "$@"
+    local rc=$?
+
+    if (( rc == 0 )); then
+        __zshrc_gentoo_status_record "$(__zshrc_gentoo_status_state_file gentoo-emaint-sync)"
+    fi
+
+    return $rc
+}
+
+upgrade() {
+    sudo emerge -uDN @world "$@"
+    local rc=$?
+
+    if (( rc == 0 )); then
+        __zshrc_gentoo_status_record "$(__zshrc_gentoo_status_state_file gentoo-emerge-world)"
+    fi
+
+    return $rc
+}
+
 alias ins='sudo emerge -av'
-alias update='sudo emaint sync -a'
-alias upgrade='sudo emerge -uDN @world'
 alias search='emerge -s'
 alias rem='sudo emerge -C'
 
