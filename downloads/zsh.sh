@@ -200,7 +200,7 @@ install_zshrc() {
     install_startup_cache_timer
 
     if [[ ! -d "${omz_dir}/plugins/cmdtime" ]]; then
-        git clone https://github.com/tom-auger/cmdtime "${omz_dir}/plugins/cmdtime"
+        git clone https://github.com/firebadnofire/cmdtime "${omz_dir}/plugins/cmdtime"
     fi
 }
 
