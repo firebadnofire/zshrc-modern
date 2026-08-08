@@ -1,0 +1,32 @@
+# ~/.zshrc
+# Bare-bones, stock Zsh only.
+
+[[ -o interactive ]] || return
+
+# Environment
+export EDITOR=vim
+
+# Colors
+autoload -Uz colors
+colors
+
+# Prompt
+PROMPT='[%*] %F{cyan}%n%f@%F{magenta}%m%f:%F{green}%~%f %(!.#.$) '
+
+# History
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+
+setopt appendhistory
+setopt histignoredups
+
+# Completion
+autoload -Uz compinit
+compinit
+
+# Aliases
+alias cls='clear'
+alias x='exit'
+alias ll='ls -lh'
+alias la='ls -lah'
