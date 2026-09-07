@@ -28,7 +28,7 @@ SHARED_MODULES=(
     "02-git-signing.zrc"
     "03-system-aliases.zrc"
     "05-tools.zrc"
-    "06-emerge.zrc"
+    "09-emerge.zrc"
     "10-flatpak.zrc"
     "99-post.zrc"
     "suppress-warning.zrc"
