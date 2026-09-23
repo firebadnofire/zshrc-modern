@@ -1,6 +1,7 @@
 __zmodules_add "03-system-aliases.zrc" "System Aliases"
 
-alias f="find . -type f | fzy"
+alias f="find . -type f | fzf"
+alias open="xdg-open"
 alias tp='ping -c 4 google.com'
 alias tlp='ping -c 4 192.168.86.1'
 alias trp='ping -c 4 8.8.8.8'
